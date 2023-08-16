@@ -510,12 +510,14 @@ export function buildImportAnalysisPlugin(config: ResolvedConfig): Plugin {
                   const chunk = bundle[filename] as OutputChunk | undefined
                   if (chunk) {
                     deps.add(chunk.fileName)
-                    chunk.imports.forEach(addDeps)
-                    // Ensure that the css imported by current chunk is loaded after the dependencies.
-                    // So the style of current chunk won't be overwritten unexpectedly.
-                    chunk.viteMetadata!.importedCss.forEach((file) => {
-                      deps.add(file)
-                    })
+                    if (typeof chunk.imports !== "undefined" ) { //add validation start
+                      chunk.imports.forEach(addDeps)
+                      // Ensure that the css imported by current chunk is loaded after the dependencies.
+                      // So the style of current chunk won't be overwritten unexpectedly.
+                      chunk.viteMetadata!.importedCss.forEach((file) => {
+                        deps.add(file)
+                      })
+                    }
                   } else {
                     const removedPureCssFiles =
                       removedPureCssFilesCache.get(config)!
